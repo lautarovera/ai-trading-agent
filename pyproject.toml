@@ -1,0 +1,19 @@
+[project]
+name = "ai-trading-agent"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=0.109.1",
+    "numpy>=2.4.6",
+    "pandas>=3.0.3",
+    "plotly>=6.8.0",
+    "pyarrow>=24.0.0",
+    "pyyaml>=6.0.3",
+    "scikit-learn>=1.9.0",
+    "streamlit>=1.58.0",
+    "yfinance>=1.4.1",
+]
+
+[dependency-groups]
+dev = []

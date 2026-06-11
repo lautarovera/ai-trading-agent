@@ -1,0 +1,53 @@
+# AI Trading Agent configuration — PAPER TRADING ONLY
+mode: paper
+
+universe:
+  # Company stocks and ETFs only (no crypto / high-volatility assets)
+  symbols:
+    - AAPL
+    - MSFT
+    - GOOGL
+    - AMZN
+    - NVDA
+    - JPM
+    - JNJ
+    - SPY
+    - QQQ
+    - VTI
+
+portfolio:
+  starting_cash: 100000.0
+  db_path: data/paper_broker.db
+
+data:
+  history_period: 2y      # lookback for indicators + ML training
+  interval: 1d
+  cache_dir: data/cache
+  cache_ttl_minutes: 30
+
+strategies:
+  technical:
+    enabled: true
+    weight: 1.0
+  ml:
+    enabled: true
+    weight: 1.5
+    min_train_rows: 250
+  llm:
+    enabled: true          # auto-disables if ANTHROPIC_API_KEY is not set
+    weight: 1.0
+    model: claude-haiku-4-5
+
+ensemble:
+  buy_threshold: 0.20      # combined score above this -> buy
+  sell_threshold: -0.20    # combined score below this -> sell
+
+risk:
+  max_position_pct: 0.15   # max 15% of equity per symbol
+  cash_reserve_pct: 0.05   # always keep 5% cash
+  stop_loss_pct: 0.08      # exit if position down 8% from avg cost
+  take_profit_pct: 0.25    # trim if position up 25%
+  max_trades_per_cycle: 5
+
+agent:
+  cycle_minutes: 30        # how often the loop re-evaluates
