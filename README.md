@@ -50,9 +50,37 @@ uv run python backtest.py --days 250
 
 Everything lives in [config.yaml](config.yaml): universe of symbols, starting cash, strategy weights, ensemble thresholds, risk limits, and the loop interval.
 
+## Brokers
+
+Two interchangeable backends, selected via `portfolio.broker` in `config.yaml`:
+
+- `local` (default) — SQLite simulation, instant idealized fills.
+- `alpaca` — routes orders to the [Alpaca](https://alpaca.markets) **paper** trading API (realistic fills, market-hours enforcement). Needs free paper keys in `.env`:
+  ```
+  ALPACA_API_KEY=...
+  ALPACA_SECRET_KEY=...
+  ```
+  The client is hard-pinned to the paper endpoint; live trading is deliberately not wired up. A `max_order_value` guardrail rejects oversized orders.
+
+### Activating Alpaca paper trading
+
+1. Sign up free at <https://app.alpaca.markets> — paper trading needs no funding, no residency checks, no broker approval (works from the EU).
+2. Generate **paper** API keys (dashboard → "Paper" toggle → API Keys) and add them to `.env` in the project root:
+   ```
+   ALPACA_API_KEY=PK...
+   ALPACA_SECRET_KEY=...
+   ```
+3. Set `broker: alpaca` under `portfolio:` in `config.yaml`, then restart the agent:
+   ```sh
+   systemctl --user restart trading-agent   # or just re-run run_agent.py
+   ```
+
+The Alpaca paper account starts with $100k virtual cash, and Alpaca's own web dashboard gives an independent view of positions and fills to cross-check the agent.
+
 ## Roadmap
 
 - [x] v0: watch-only dashboard, automated paper trading
+- [x] Alpaca paper-broker integration
 - [ ] User intervention (manual orders, strategy toggles) from the dashboard
 - [ ] Richer fundamentals/news inputs for the LLM analyst
-- [ ] Live paper-broker integration (e.g. Alpaca paper API)
+- [ ] Live trading with guardrails (explicit opt-in, small budget)

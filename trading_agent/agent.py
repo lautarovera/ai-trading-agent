@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 
-from .broker import PaperBroker
+from .broker import make_broker
 from .config import load_config
 from .data import MarketData
 from .ensemble import Decision, Ensemble
@@ -25,8 +25,7 @@ class TradingAgent:
                                cache_ttl_minutes=d["cache_ttl_minutes"],
                                period=d["history_period"], interval=d["interval"])
 
-        p = cfg["portfolio"]
-        self.broker = PaperBroker(db_path=p["db_path"], starting_cash=p["starting_cash"])
+        self.broker = make_broker(cfg)
 
         s = cfg["strategies"]
         self.strategies = []

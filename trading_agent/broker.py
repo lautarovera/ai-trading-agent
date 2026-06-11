@@ -150,3 +150,14 @@ class PaperBroker:
         rows = self.conn.execute(
             "SELECT * FROM signals_log ORDER BY id DESC LIMIT ?", (limit,)).fetchall()
         return [dict(r) for r in rows]
+
+
+def make_broker(cfg: dict) -> PaperBroker:
+    """Build the configured broker: 'local' (SQLite sim) or 'alpaca' (paper API)."""
+    p = cfg["portfolio"]
+    kind = p.get("broker", "local")
+    if kind == "alpaca":
+        from .alpaca_broker import AlpacaPaperBroker
+        return AlpacaPaperBroker(db_path=p.get("alpaca_log_db", "data/alpaca_log.db"),
+                                 max_order_value=p.get("max_order_value", 20_000.0))
+    return PaperBroker(db_path=p["db_path"], starting_cash=p["starting_cash"])

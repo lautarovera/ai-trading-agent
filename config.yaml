@@ -16,8 +16,14 @@ universe:
     - VTI
 
 portfolio:
+  # broker: local  -> SQLite simulation (default)
+  # broker: alpaca -> Alpaca PAPER trading API (needs ALPACA_API_KEY /
+  #                   ALPACA_SECRET_KEY in .env; live trading is not wired up)
+  broker: local
   starting_cash: 100000.0
   db_path: data/paper_broker.db
+  alpaca_log_db: data/alpaca_log.db
+  max_order_value: 20000.0   # guardrail: reject any single order above this
 
 data:
   history_period: 2y      # lookback for indicators + ML training

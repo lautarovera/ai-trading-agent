@@ -10,15 +10,14 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from trading_agent.broker import PaperBroker
+from trading_agent.broker import make_broker
 from trading_agent.config import load_config
 from trading_agent.data import MarketData
 
 st.set_page_config(page_title="AI Trading Agent", page_icon="📈", layout="wide")
 
 cfg = load_config()
-broker = PaperBroker(db_path=cfg["portfolio"]["db_path"],
-                     starting_cash=cfg["portfolio"]["starting_cash"])
+broker = make_broker(cfg)
 data = MarketData(cache_dir=cfg["data"]["cache_dir"],
                   cache_ttl_minutes=cfg["data"]["cache_ttl_minutes"],
                   period=cfg["data"]["history_period"],
